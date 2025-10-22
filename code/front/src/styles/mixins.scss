@@ -1,0 +1,258 @@
+// 响应式混合器
+@mixin media($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: $breakpoint-xs) { @content; }
+  } @else if $breakpoint == sm {
+    @media (max-width: $breakpoint-sm) { @content; }
+  } @else if $breakpoint == md {
+    @media (max-width: $breakpoint-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (max-width: $breakpoint-lg) { @content; }
+  } @else if $breakpoint == xl {
+    @media (max-width: $breakpoint-xl) { @content; }
+  } @else if $breakpoint == 'min-xs' {
+    @media (min-width: $breakpoint-xs) { @content; }
+  } @else if $breakpoint == 'min-sm' {
+    @media (min-width: $breakpoint-sm) { @content; }
+  } @else if $breakpoint == 'min-md' {
+    @media (min-width: $breakpoint-md) { @content; }
+  } @else if $breakpoint == 'min-lg' {
+    @media (min-width: $breakpoint-lg) { @content; }
+  } @else if $breakpoint == 'min-xl' {
+    @media (min-width: $breakpoint-xl) { @content; }
+  } @else {
+    @media (max-width: $breakpoint) { @content; }
+  }
+}
+
+// Flexbox 混合器
+@mixin flex {
+  display: flex;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-grow($value: 1) {
+  flex-grow: $value;
+}
+
+// 阴影混合器
+@mixin shadow($size: 'md') {
+  @if $size == 'sm' {
+    box-shadow: $shadow-sm;
+  } @else if $size == 'md' {
+    box-shadow: $shadow-md;
+  } @else if $size == 'lg' {
+    box-shadow: $shadow-lg;
+  } @else if $size == 'xl' {
+    box-shadow: $shadow-xl;
+  } @else {
+    box-shadow: $size;
+  }
+}
+
+// 边框混合器
+@mixin border($color: $border-color, $width: 1px, $style: solid) {
+  border: $width $style $color;
+}
+
+@mixin border-radius($radius: $border-radius) {
+  border-radius: $radius;
+}
+
+// 动画混合器
+@mixin transition($property: all, $duration: $transition-speed, $timing: ease) {
+  transition: $property $duration $timing;
+}
+
+@mixin transform($value) {
+  transform: $value;
+}
+
+// 布局混合器
+@mixin container($max-width: 1200px) {
+  width: 100%;
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+}
+
+@mixin card {
+  background-color: $white;
+  border-radius: $border-radius;
+  box-shadow: $card-shadow;
+  padding: $spacing-lg;
+}
+
+// 文字混合器
+@mixin text-ellipsis($lines: 1) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin font-size($size) {
+  font-size: $size;
+}
+
+@mixin font-weight($weight) {
+  font-weight: $weight;
+}
+
+// 滚动条样式混合器
+@mixin scrollbar($width: $scrollbar-width, $track: $scrollbar-track, $thumb: $scrollbar-thumb, $thumb-hover: $scrollbar-thumb-hover) {
+  // WebKit 浏览器
+  &::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $track;
+    border-radius: $border-radius-full;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $thumb;
+    border-radius: $border-radius-full;
+    
+    &:hover {
+      background: $thumb-hover;
+    }
+  }
+  
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: $thumb $track;
+}
+
+// 按钮混合器
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: all $transition-speed ease;
+  border: none;
+  outline: none;
+  
+  &:disabled {
+    opacity: $opacity-disabled;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $primary-color;
+  color: $white;
+  
+  &:hover:not(:disabled) {
+    background-color: $primary-dark;
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: $white;
+  color: $text-color;
+  border: 1px solid $border-color;
+  
+  &:hover:not(:disabled) {
+    background-color: $gray-100;
+  }
+}
+
+@mixin button-danger {
+  @include button-base;
+  background-color: $danger-color;
+  color: $white;
+  
+  &:hover:not(:disabled) {
+    background-color: darken($danger-color, 10%);
+  }
+}
+
+// 输入框混合器
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  font-size: $font-size-base;
+  font-family: $font-family;
+  color: $text-color;
+  background-color: $white;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  transition: border-color $transition-speed ease, box-shadow $transition-speed ease;
+  outline: none;
+  
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+  }
+  
+  &:disabled {
+    background-color: $gray-100;
+    color: $text-disabled;
+    cursor: not-allowed;
+  }
+  
+  &::placeholder {
+    color: $text-disabled;
+  }
+}
+
+// 工具类混合器
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 加载动画混合器
+@mixin loading-spinner($size: 24px, $color: $primary-color) {
+  width: $size;
+  height: $size;
+  border: 2px solid rgba($color, 0.3);
+  border-radius: 50%;
+  border-top-color: $color;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yee Note App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        .page.active {
+            display: block;
+        }
+        .nav-item.active {
+            color: #4ade80;
+        }
+        .note-card {
+            transition: all 0.3s ease;
+        }
+        .note-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .editor-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .category-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <!-- 导航栏 -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-lg z-50">
+        <div class="flex justify-around items-center h-16">
+            <a href="#home" class="nav-item flex flex-col items-center justify-center text-gray-600 hover:text-green-400 transition-colors">
+                <i class="fas fa-home text-xl"></i>
+                <span class="text-xs mt-1">首页</span>
+            </a>
+            <a href="#noteEditor" class="nav-item flex flex-col items-center justify-center text-gray-600 hover:text-green-400 transition-colors">
+                <i class="fas fa-edit text-xl"></i>
+                <span class="text-xs mt-1">编辑</span>
+            </a>
+            <a href="#categoryManager" class="nav-item flex flex-col items-center justify-center text-gray-600 hover:text-green-400 transition-colors">
+                <i class="fas fa-folder text-xl"></i>
+                <span class="text-xs mt-1">分类</span>
+            </a>
+            <a href="#search" class="nav-item flex flex-col items-center justify-center text-gray-600 hover:text-green-400 transition-colors">
+                <i class="fas fa-search text-xl"></i>
+                <span class="text-xs mt-1">搜索</span>
+            </a>
+            <a href="#settings" class="nav-item flex flex-col items-center justify-center text-gray-600 hover:text-green-400 transition-colors">
+                <i class="fas fa-cog text-xl"></i>
+                <span class="text-xs mt-1">设置</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 页面内容 -->
+    <div class="container mx-auto px-4">
+        <!-- 首页 -->
+        <div id="home" class="page active">
+            <header class="py-6">
+                <h1 class="text-3xl font-bold text-green-600">Yee Note </h1>
+                <p class="text-gray-500 mt-2">记录生活点滴，整理零碎信息</p>
+            </header>
+
+            <div class="mb-4 flex justify-between items-center">
+                <h2 class="text-xl font-semibold">最近笔记</h2>
+                <button class="bg-green-500 text-white p-2 rounded-full shadow-lg hover:bg-green-600 transition-colors">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <div class="note-card bg-white rounded-lg shadow p-4">
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-medium text-lg">项目会议记录</h3>
+                        <span class="text-xs text-gray-500">今天 14:30</span>
+                    </div>
+                    <p class="text-gray-600 mt-2 line-clamp-2">讨论了Q3产品规划，确定了主要功能开发优先级，需要在下周五前完成原型设计...</p>
+                    <div class="mt-3 flex items-center">
+                        <span class="category-badge bg-blue-200"></span>
+                        <span class="text-xs text-gray-500">工作</span>
+                    </div>
+                </div>
+
+                <div class="note-card bg-white rounded-lg shadow p-4">
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-medium text-lg">周末购物清单</h3>
+                        <span class="text-xs text-gray-500">昨天 19:15</span>
+                    </div>
+                    <p class="text-gray-600 mt-2 line-clamp-2">牛奶、鸡蛋、面包、水果、蔬菜...</p>
+                    <div class="mt-3 flex items-center">
+                        <span class="category-badge bg-yellow-200"></span>
+                        <span class="text-xs text-gray-500">生活</span>
+                    </div>
+                </div>
+
+                <div class="note-card bg-white rounded-lg shadow p-4">
+                    <div class="flex justify-between items-start">
+                        <h3 class="font-medium text-lg">读书笔记 - 设计心理学</h3>
+                        <span class="text-xs text-gray-500">2023-06-10</span>
+                    </div>
+                    <p class="text-gray-600 mt-2 line-clamp-2">好的设计应该让用户一目了然，不需要额外的解释。设计师需要考虑用户的心理模型...</p>
+                    <div class="mt-3 flex items-center">
+                        <span class="category-badge bg-purple-200"></span>
+                        <span class="text-xs text-gray-500">学习</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 笔记编辑 -->
+        <div id="noteEditor" class="page">
+            <div class="editor-toolbar bg-white py-3 px-4 shadow-sm sticky top-0">
+                <div class="flex justify-between items-center">
+                    <button class="text-gray-500">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="flex space-x-2">
+                        <button class="text-gray-500">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <button class="text-gray-500">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="text-gray-500">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <input type="text" placeholder="标题" class="w-full text-2xl font-bold border-none focus:outline-none px-4 py-2">
+                <div class="px-4">
+                    <div class="border-l-4 border-green-500 pl-3">
+                        <textarea placeholder="开始记录..." class="w-full min-h-[300px] border-none focus:outline-none resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="px-4 mt-4">
+                    <div class="flex items-center">
+                        <span class="text-gray-500 mr-2">分类:</span>
+                        <select class="bg-gray-100 rounded px-2 py-1 text-sm">
+                            <option>工作</option>
+                            <option>生活</option>
+                            <option>学习</option>
+                            <option selected>未分类</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-4">
+                        <span class="text-gray-500 mr-2">标签:</span>
+                        <div class="inline-flex flex-wrap gap-2">
+                            <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">会议</span>
+                            <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">重要</span>
+                            <button class="text-green-500 text-xs">
+                                <i class="fas fa-plus"></i> 添加
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分类管理 -->
+        <div id="categoryManager" class="page">
+            <header class="py-4">
+                <h1 class="text-2xl font-bold">分类管理</h1>
+            </header>
+
+            <div class="mb-4 flex justify-between items-center">
+                <h2 class="text-lg font-semibold">我的分类</h2>
+                <button class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors">
+                    <i class="fas fa-plus mr-1"></i> 新建
+                </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-4 border-b flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="category-badge bg-blue-200"></span>
+                        <span>工作</span>
+                    </div>
+                    <span class="text-sm text-gray-500">12篇笔记</span>
+                </div>
+                <div class="p-4 border-b flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="category-badge bg-yellow-200"></span>
+                        <span>生活</span>
+                    </div>
+                    <span class="text-sm text-gray-500">8篇笔记</span>
+                </div>
+                <div class="p-4 border-b flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="category-badge bg-purple-200"></span>
+                        <span>学习</span>
+                    </div>
+                    <span class="text-sm text-gray-500">15篇笔记</span>
+                </div>
+                <div class="p-4 flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="category-badge bg-gray-200"></span>
+                        <span>未分类</span>
+                    </div>
+                    <span class="text-sm text-gray-500">3篇笔记</span>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h2 class="text-lg font-semibold mb-3">分类操作</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="bg-white rounded-lg shadow p-3 flex flex-col items-center">
+                        <i class="fas fa-exchange-alt text-green-500 text-xl mb-2"></i>
+                        <span class="text-sm">导入/导出</span>
+                    </button>
+                    <button class="bg-white rounded-lg shadow p-3 flex flex-col items-center">
+                        <i class="fas fa-palette text-green-500 text-xl mb-2"></i>
+                        <span class="text-sm">颜色管理</span>
+                    </button>
+                    <button class="bg-white rounded-lg shadow p-3 flex flex-col items-center">
+                        <i class="fas fa-sort text-green-500 text-xl mb-2"></i>
+                        <span class="text-sm">排序</span>
+                    </button>
+                    <button class="bg-white rounded-lg shadow p-3 flex flex-col items-center">
+                        <i class="fas fa-trash-alt text-green-500 text-xl mb-2"></i>
+                        <span class="text-sm">批量删除</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 全局搜索 -->
+        <div id="search" class="page">
+            <header class="py-4">
+                <div class="relative">
+                    <input type="text" placeholder="搜索笔记..." class="w-full bg-white rounded-full py-3 px-5 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300 pl-12">
+                    <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
+                </div>
+            </header>
+
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold mb-2">最近搜索</h2>
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">会议记录</span>
+                    <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">购物清单</span>
+                    <span class="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full">设计心理学</span>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-lg font-semibold mb-2">高级筛选</h2>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <div class="mb-3">
+                        <label class="block text-sm text-gray-500 mb-1">分类</label>
+                        <select class="w-full bg-gray-100 rounded px-3 py-2 text-sm">
+                            <option>所有分类</option>
+                            <option>工作</option>
+                            <option>生活</option>
+                            <option>学习</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm text-gray-500 mb-1">时间范围</label>
+                        <select class="w-full bg-gray-100 rounded px-3 py-2 text-sm">
+                            <option>全部时间</option>
+                            <option>今天</option>
+                            <option>最近7天</option>
+                            <option>最近30天</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-500 mb-1">包含标签</label>
+                        <input type="text" placeholder="输入标签" class="w-full bg-gray-100 rounded px-3 py-2 text-sm">
+                    </div>
+                    <button class="w-full bg-green-500 text-white py-2 rounded mt-4 hover:bg-green-600 transition-colors">
+                        搜索
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置中心 -->
+        <div id="settings" class="page">
+            <header class="py-4">
+                <h1 class="text-2xl font-bold">设置中心</h1>
+            </header>
+
+            <div class="bg-white rounded-lg shadow mb-4">
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">账号设置</h3>
+                            <p class="text-sm text-gray-500">user@example.com</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">主题与外观</h3>
+                            <p class="text-sm text-gray-500">浅色模式</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">字体与排版</h3>
+                            <p class="text-sm text-gray-500">系统默认</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">数据备份</h3>
+                            <p class="text-sm text-gray-500">上次备份: 今天 08:30</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">安全设置</h3>
+                            <p class="text-sm text-gray-500">应用锁已关闭</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow mb-4">
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">云端同步</h3>
+                            <p class="text-sm text-gray-500">已使用 256MB/5GB</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">帮助与反馈</h3>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">关于Yee Note </h3>
+                            <p class="text-sm text-gray-500">版本 1.2.0</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <button class="w-full bg-red-100 text-red-500 py-3 rounded-lg mt-6 font-medium">
+                退出登录
+            </button>
+        </div>
+
+        <!-- 登录页面 -->
+        <div id="login" class="page">
+            <div class="min-h-screen flex flex-col justify-center">
+                <div class=``;class="bg-white p-8 rounded-lg shadow-md mx-4">
+                    <h1 class="text-2xl font-bold text-center text-green-600 mb-6">登录Yee Note </h1>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">邮箱/手机号</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="请输入邮箱或手机号">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">密码</label>
+                        <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="请输入密码">
+                        <div class="text-right mt-1">
+                            <a href="#" class="text-sm text-green-600 hover:underline">忘记密码?</a>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors mb-4">
+                        登录
+                    </button>
+                    
+                    <div class="text-center text-sm">
+                        <span class="text-gray-600">还没有账号?</span>
+                        <a href="#register" class="text-green-600 font-medium hover:underline ml-1">立即注册</a>
+                    </div>
+                    
+                    <div class="relative my-6">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">或使用第三方账号登录</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center space-x-4">
+                        <button class="p-2 rounded-full border border-gray-200 text-blue-500">
+                            <i class="fab fa-weixin text-xl"></i>
+                        </button>
+                        <button class="p-2 rounded-full border border-gray-200 text-red-500">
+                            <i class="fab fa-weibo text-xl"></i>
+                        </button>
+                        <button class="p-2 rounded-full border border-gray-200 text-black">
+                            <i class="fab fa-github text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 注册页面 -->
+        <div id="register" class="page">
+            <div class="min-h-screen flex flex-col justify-center">
+                <div class="bg-white p-8 rounded-lg shadow-md mx-4">
+                    <h1 class="text-2xl font-bold text-center text-green-600 mb-6">注册Yee Note </h1>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">邮箱</label>
+                        <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="请输入邮箱">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">手机号</label>
+                        <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="请输入手机号">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">验证码</label>
+                        <div class="flex">
+                            <input type="text" class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="请输入验证码">
+                            <button class="bg-green-500 text-white px-4 py-2 rounded-r-md hover:bg-green-600 transition-colors">获取验证码</button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">设置密码</label>
+                        <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="请输入密码(6-20位字符)">
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">确认密码</label>
+                        <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="请再次输入密码">
+                    </div>
+                    
+                    <div class="mb-4 flex items-start">
+                        <input type="checkbox" id="agree" class="mt-1 mr-2">
+                        <label for="agree" class="text-sm text-gray-600">我已阅读并同意<a href="#" class="text-green-600 hover:underline">《用户协议》</a>和<a href="#" class="text-green-600 hover:underline">《隐私政策》</a></label>
+                    </div>
+                    
+                    <button class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors mb-4">
+                        注册
+                    </button>
+                    
+                    <div class="text-center text-sm">
+                        <span class="text-gray-600">已有账号?</span>
+                        <a href="#login" class="text-green-600 font-medium hover:underline ml-1">立即登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 云端同步 -->
+        <div id="cloudSync" class="page">
+            <header class="py-4">
+                <h1 class="text-2xl font-bold">云端同步</h1>
+            </header>
+
+            <div class="bg-white rounded-lg shadow p-4 mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-medium">同步状态</span>
+                    <span class="text-sm text-green-500">已连接</span>
+                </div>
+                <div class="h-2 bg-gray-200 rounded-full mb-2">
+                    <div class="h-2 bg-green-500 rounded-full" style="width: 75%"></div>
+                </div>
+                <div class="flex justify-between text-sm text-gray-500">
+                    <span>已使用 256MB</span>
+                    <span>剩余 4.74GB</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow mb-4">
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">自动同步</h3>
+                            <p class="text-sm text-gray-500">WiFi下自动同步</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+                        </label>
+                    </div>
+                </div>
+                <div class="p-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">同步频率</h3>
+                            <p class="text-sm text-gray-500">每6小时</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-medium">同步内容</h3>
+                            <p class="text-sm text-gray-500">笔记和分类</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <button class="w-full bg-green-500 text-white py-3 rounded-lg mb-4 font-medium hover:bg-green-600 transition-colors">
+                <i class="fas fa-sync-alt mr-2"></i>立即同步
+            </button>
+
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-4 border-b">
+                    <h3 class="font-medium mb-2">同步历史</h3>
+                    <div class="text-sm space-y-3">
+                        <div class="flex justify-between">
+                            <span>今天 08:30</span>
+                            <span class="text-green-500">成功</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>昨天 22:15</span>
+                            <span class="text-green-500">成功</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>昨天 16:30</span>
+                            <span class="text-red-500">失败</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面切换逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取所有页面和导航项
+            const pages = document.querySelectorAll('.page');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            // 根据hash显示对应页面
+            function showPageFromHash() {
+                const hash = window.location.hash || '#home';
+                
+                // 隐藏所有页面
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // 显示对应页面
+                const activePage = document.querySelector(hash);
+                if (activePage) {
+                    activePage.classList.add('active');
+                } else {
+                    document.querySelector('#home').classList.add('active');
+                }
+                
+                // 更新导航项状态
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('href') === hash) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+            
+            // 初始加载时显示对应页面
+            showPageFromHash();
+            
+            // 监听hash变化
+            window.addEventListener('hashchange', showPageFromHash);
+            
+            // 点击导航项时添加active类
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
