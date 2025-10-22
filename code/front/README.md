@@ -247,5 +247,5 @@ MIT License
 
 ## 相关链接
 
-- [项目主仓库](https://github.com/yourusername/YeeAppDemo)
-- [后端项目](https://github.com/yourusername/YeeAppDemo/tree/main/code/backend)
+- [项目主仓库](https://github.com/wenzi712/YeeAppDemo)
+- [后端项目](https://github.com/wenzi712/YeeAppDemo/tree/main/code/backend)
