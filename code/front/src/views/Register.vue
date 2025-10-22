@@ -155,7 +155,7 @@
       
       <!-- 页脚 -->
       <div class="register-footer">
-        <p>&copy; 2024 Yee Note  - 保护您的隐私，记录美好生活</p>
+        <p>&copy; 2025 Yee Note  - 保护您的隐私，记录美好生活</p>
         <div class="footer-links">
           <router-link to="/terms" class="footer-link">服务条款</router-link>
           <router-link to="/privacy" class="footer-link">隐私政策</router-link>
